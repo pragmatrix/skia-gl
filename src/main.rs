@@ -1,3 +1,4 @@
+use sdl2::event::Event;
 use std::fs;
 
 fn main() {
@@ -23,9 +24,8 @@ fn main() {
     let mut event_pump = sdl.event_pump().unwrap();
     'main: loop {
         for event in event_pump.poll_iter() {
-            match event {
-                sdl2::event::Event::Quit { .. } => break 'main,
-                _ => {}
+            if let Event::Quit { .. } = event {
+                break 'main;
             }
         }
 
@@ -57,7 +57,7 @@ use skia_safe::{
 
 fn draw_line_with_skia(buffer_id: i32, (width, height): (u32, u32)) -> Surface {
     let interface = gpu::gl::Interface::new_native();
-    let context = gpu::Context::new_gl(interface.unwrap());
+    let context = gpu::DirectContext::new_gl(interface.unwrap(), None);
     let mut ctx = context.unwrap();
     let mut frame_buffer = gpu::gl::FramebufferInfo::from_fboid(buffer_id as u32);
     frame_buffer.format = 0x8058; //GR_GL_RGBA8 (https://github.com/google/skia/blob/master/src/gpu/gl/GrGLDefines.h#L511)
@@ -74,7 +74,7 @@ fn draw_line_with_skia(buffer_id: i32, (width, height): (u32, u32)) -> Surface {
     );
     let mut surface = surface_holder.unwrap();
     {
-        let mut canvas = surface.canvas();
+        let canvas = surface.canvas();
         let mut paint = Paint::default();
         paint.set_color(Color::new(0xffff0000));
         canvas.draw_line((0, 0), (100, 100), &paint);

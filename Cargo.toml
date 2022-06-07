@@ -8,5 +8,5 @@ edition = "2021"
 
 [dependencies]
 sdl2 = { version = "0.33", features = ["bundled", "static-link"] }
-skia-safe = { version = "0.27", features = ["gl"] }
+skia-safe = { version = "0.50.0", features = ["gl"] }
 gl = "0.14"
